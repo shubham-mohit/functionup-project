@@ -2,7 +2,7 @@ const express = require('express');
 const { route } = require('express/lib/application');
 const router = express.Router();
 const commonFile = require('./common')
-const myUnderscore = require('underscore')
+// const myUnderscore = require('underscore')
 
 router.get('/test-me', function (req, res) {
     res.send('This should be working!')
@@ -47,6 +47,55 @@ router.get('/students/:studentName', function(req, res) {
     //res.send({data: studentDetails})
     res.send('student data')
 })
-
-
+router.get('/movies', function(req, res){
+    res.send(['genius','dear comrade','sairat','ved'])
+})
+// router.get('/movies/:indexNumber',function(req ,res){
+//     const movies = ['genius','dear comrade','sairat','ved']
+//     console.log(req.params.indexNumber)
+//     let no = req.params.indexNumber;
+//     if(no > movies.length-1 || no < 0){
+//     res.send('Enter valid no')
+//     }
+// })
+router.get('/movies/:indexNumber',function(req , res){
+    const movies = ['genius','dear comrade','sairat','ved']
+    // console.log(req.params.indexNumber)
+    let a = req.params.indexNumber
+    console.log(movies[a])
+})
+router.get('/films',function(req , res){
+    res.send([ {
+        'id': 1,
+        'name': 'The Shining'
+       }, {
+        'id': 2,
+        'name': 'Incendies'
+       }, {
+        'id': 3,
+        'name': 'Rang de Basanti'
+       }, {
+        'id': 4,
+        'name': 'Finding Nemo'
+       }]
+       )
+})
+router.get('/films/:filmId', function(req ,res){
+    const films = [ {
+        'id': 1,
+        'name': 'The Shining'
+       }, {
+        'id': 2,
+        'name': 'Incendies'
+       }, {
+        'id': 3,
+        'name': 'Rang de Basanti'
+       }, {
+        'id': 4,
+        'name': 'Finding Nemo'
+       }]
+    console.log(req.params.filmId)
+    let b= req.params.filmId
+    console.log(films[b])
+})
 module.exports = router;
