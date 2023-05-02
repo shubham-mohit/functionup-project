@@ -1,59 +1,61 @@
 const { count } = require("console")
-const BookModel= require("../models/bookModel")
+const authormodel= require("../models/authors")
+const bookmodel = require("../models/book")
 
-const createBook= async function (req, res) {
-    let data= req.body
 
-    let savedData= await BookModel.create(data)
-    res.send({msg: savedData})
+const createauthor= async function (req, res) {
+    let data= req.body.authorId;
+    let ans = req.body
+    if(data){
+       let alldata= await authormodel.create(ans)
+       res.send({msg: alldata})
+    }else{
+        res.send("sorry authorId is not present")
+    }
+} 
+const createbook = async function(req , res){
+    let checkout = req.body.authorId
+    let store = req.body
+    if(checkout){
+        let savedata = await bookmodel.create(store)
+        res.send({msg: savedata})
+    }
+    else{
+        res.send("sorry authorId is not found")
+    }
+}
+const findbooks = async function(req ,res){
+    let search = req.body.authorName
+    let finddata = await authormodel.find({authorName:search}).select({authorId:1,_id:0})
+    let getbook = await bookmodel.find({authorId:"1"})
+    if(finddata){
+        res.send({msg: getbook})
+    }
+    else{
+        res.send("no match found")
+    }
+}
+const findauthor = async function(req, res){
+    let resr = req.body.bookname;
+    let ans = await bookmodel.findOneAndUpdate({bookname:resr},{price:100},{new:true})
+    let ans2 = await authormodel.find({authorId:1})
+    if(ans){
+        res.send({msg:ans2})
+    }
+    else{
+        res.send('not found')
+    }
+}
+const thebook = async function(req,res){
+    let alldata = await bookmodel.find({price:{$gte:50 , $lte:100}}).select({authorId:1})
+    // res.send({msg:alldata})
+    let diff = alldata.map((x)=> x.authorId)
+    let result = await authormodel.find({authorId:diff}).select({authorName:1})
+    res.send({msg:result})
 }
 
-const getBooksData= async function (req, res) {
-    let allBooks= await BookModel.find( {authorName : "HO" } )
-    console.log(allBooks)
-    if (allBooks.length > 0 )  res.send({msg: allBooks, condition: true})
-    else res.send({msg: "No books found" , condition: false})
-}
-
-
-const updateBooks= async function (req, res) {
-    let data = req.body // {sales: "1200"}
-    // let allBooks= await BookModel.updateMany( 
-    //     { author: "SK"} , //condition
-    //     { $set: data } //update in data
-    //  )
-    let allBooks= await BookModel.findOneAndUpdate( 
-        { authorName: "ABC"} , //condition
-        { $set: data }, //update in data
-        { new: true , upsert: true} ,// new: true - will give you back the updated document // Upsert: it finds and updates the document but if the doc is not found(i.e it does not exist) then it creates a new document i.e UPdate Or inSERT  
-     )
-     
-     res.send( { msg: allBooks})
-}
-
-const deleteBooks= async function (req, res) {
-    // let data = req.body 
-    let allBooks= await BookModel.updateMany( 
-        { authorName: "FI"} , //condition
-        { $set: {isDeleted: true} }, //update in data
-        { new: true } ,
-     )
-     
-     res.send( { msg: allBooks})
-}
-
-
-
-
-// CRUD OPERATIONS:
-// CREATE
-// READ
-// UPDATE
-// DELETE
-
-
-
-module.exports.createBook= createBook
-module.exports.getBooksData= getBooksData
-module.exports.updateBooks= updateBooks
-module.exports.deleteBooks= deleteBooks
+module.exports.createbook = createbook
+module.exports.createauthor= createauthor
+module.exports.findbooks = findbooks
+module.exports.findauthor = findauthor
+module.exports.thebook = thebook
