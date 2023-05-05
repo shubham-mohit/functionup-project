@@ -9,10 +9,6 @@ const createBook= async function (req, res) {
 }
 
 
-
-
-
-
 const getBooksData = async function (req, res) {
     let allBooks = await BookModel.find({ authorName: "HO" })
     console.log(allBooks)
