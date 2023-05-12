@@ -1,18 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const userController= require("../controllers/userController")
+const jwt = require("jsonwebtoken")
 
-router.get("/test-me", function (req, res) {
-    res.send("My first ever api!")
-})
+// const auth = async function(req,res,next){
+//     let Token = req.headers["x-auth-token"]
+//     if(!Token)  {res.send("Token not present")}
+//     else{
+//       let checkvalid = jwt.verify(Token , "team-india-token")
+//       if(!checkvalid) {res.send("Token is not valid")}
+//       else{
+//        next()
+//         }
+//       }
+// }
 
-router.post("/users", userController.createUser  )
+const auth = async function(req,res,next){
+  let Token = req.headers["x-auth-token"]
+  // console.log(Token)
+  if(!Token) {res.send("Token not present")}
+  else{
+    let checkvalid = jwt.verify(Token , "team-india-token" )
+    if(!checkvalid) {res.send("Invalid Token")}
+    // req.checkvalid = checkvalid
+      if(checkvalid.id != req.params.userid){ res.send(" Id Does Not Match")}
+      else{
+        // req.checkvalid = checkvalid
+        next()
+      }
+  }
+}
 
-router.post("/login", userController.loginUser)
 
-//The userId is sent by front end
-router.get("/users/:userId", userController.getUserData)
+router.post("/user" , userController.user)
 
-router.put("/users/:userId", userController.updateUser)
+router.post("/login" , userController.login)
+
+router.get("/getuser/:userId"  ,auth ,  userController.getuser)
+
+router.put("/update/:userid"  , userController.updatingeuser)
 
 module.exports = router;
