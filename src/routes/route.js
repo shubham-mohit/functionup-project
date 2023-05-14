@@ -38,6 +38,6 @@ router.post("/login" , userController.login)
 
 router.get("/getuser/:userId"  ,auth ,  userController.getuser)
 
-router.put("/update/:userid"  , userController.updatingeuser)
+router.put("/update/:userid"  ,auth ,  userController.updatingeuser)
 
 module.exports = router;
